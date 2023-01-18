@@ -6,14 +6,58 @@ using UnityEngine.UI;
 public class ImageViewer : MonoBehaviour
 {
     public RawImage[] images;
-
-    // idx는 1부터 시작
-    public int SetTextureImg(Texture t,int idx) {
-        if (idx > images.Length) {
-            return -1;
-        }
-        images[idx-1].texture = t;
-        return 0;
-        
+    private List<Texture> imgTextureList;
+    private int nowIndex = 0;
+    public ImageViewer() {
+        imgTextureList = new List<Texture>();
     }
+
+    public void AddTexture(Texture t) {
+        imgTextureList.Add(t);
+    }
+    public void ResetImgs() {
+        imgTextureList.Clear();
+    }
+    public void Show()
+    {
+        nowIndex = 0;
+        DrawImage();
+    }
+
+    public int GetCount() {
+        return imgTextureList.Count;
+    }
+
+    private void DrawImage() {
+        /*
+           왼쪽부터 0 1 2 / 0 1 2 3 4 
+         */
+        for (int i=0; i< images.Length; i++) {
+            //  nowIndex + i;
+            int ti = nowIndex + i;
+            if (ti >= imgTextureList.Count)
+            {
+                ti = 0;
+            }
+            images[i].texture = imgTextureList[ti];
+        }
+    }
+
+    public void Next() {
+        if (nowIndex+ images.Length >= imgTextureList.Count) {
+            return;
+        }
+        nowIndex++;
+        DrawImage();
+    }
+
+    public void Re()
+    {
+        if (nowIndex <= 0) {
+            return;
+        }
+        nowIndex--;
+        DrawImage();
+    }
+
 }
