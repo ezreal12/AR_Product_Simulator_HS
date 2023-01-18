@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.EventSystems;
-using TMPro;
+
 //
 // This script allows us to create anchors with
 // a prefab attached in order to visbly discern where the anchors are created.
@@ -32,8 +32,8 @@ public class AnchorCreator : MonoBehaviour
     [SerializeField]
     GameObject m_OneUICanvus; // 1레벨 UI (테스트로그, 서버와 JSon 통신, 서버에서 이미지 가져와 보이기)
 
-    public TextMeshProUGUI DebugMesh;
-    private int maxLogCnt = 6; // 최대 로그 제한 , 로그는 6줄까지만 출력
+    public TestLogCompo testLog; // 테스트 로그용 컴포넌트
+
     public float diff;
     /*
     0레벨 : 프로그램 시작 ~ 앵커 놓고 확인버튼 누르기까지 (이전버튼 눌러서 돌아올수있음.)
@@ -58,28 +58,7 @@ public class AnchorCreator : MonoBehaviour
         get => m_OneUICanvus;
         set => m_OneUICanvus = value;
     }
-    private void AddLog(string log) {
-        if (DebugMesh != null) {
-            string oldText = DebugMesh.text;
-            if (oldText.Length < 1)
-            {
-                DebugMesh.SetText(log);
-            }
-            else {
-                string[] oldTestSp = oldText.Split("\n");
-                string s = "";
-                for (int i=0; i<oldTestSp.Length; i++) {
-                    if (i == 0 && (oldTestSp.Length > maxLogCnt)) {
-                        continue;
-                    }
-                    s += oldTestSp[i] + "\n";
-                }
-                s += log;
-                DebugMesh.SetText(s);
-            }
 
-        }
-    }
     // On Awake(), we obtains a reference to all the required components.
     // The ARRaycastManager allows us to perform raycasts so that we know where to place an anchor.
     // The ARPlaneManager detects surfaces we can place our objects on.
@@ -187,14 +166,19 @@ public class AnchorCreator : MonoBehaviour
 
         }
     }
-    private void DisabledZeroCanvus() {
+    private void DisabledAllCanvus() {
         if (m_MainUICanvus.activeSelf == true)
         {
             m_MainUICanvus.SetActive(false);
         }
+        if (m_OneUICanvus.activeSelf == true)
+        {
+            m_OneUICanvus.SetActive(false);
+        }
 
     }
     private void ShowZeroCanvus() {
+        m_OneUICanvus.SetActive(false);
         m_MainUICanvus.SetActive(true);
     }
     private void ShowOneCanvus() {
@@ -205,10 +189,16 @@ public class AnchorCreator : MonoBehaviour
         AddLog("SetLevel : "+l);
         this.nowLevel = l;
         switch (nowLevel) {
-            case -1: DisabledZeroCanvus(); break;
+            case -1: DisabledAllCanvus(); break;
             case 0: ShowZeroCanvus(); break;
             case 1: ShowOneCanvus(); break;
             default: break;
+        }
+    }
+
+    private void AddLog(string log) {
+        if (testLog != null) {
+            testLog.AddLog(log);
         }
     }
 

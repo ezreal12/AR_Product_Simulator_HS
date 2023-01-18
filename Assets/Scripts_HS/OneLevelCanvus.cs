@@ -6,52 +6,88 @@ using UnityEngine.Networking;
 
 public class OneLevelCanvus : MonoBehaviour
 {
-    private TextMeshPro TestLog;
+
+
+    public TestLogCompo testLog; // 테스트 로그용 컴포넌트
+    public GameObject imageViewerGameObject;
+    private ImageViewer imageViewer; // 서버에서 가져온 이미지 출력용 그거
+    private ServerFileList fileList; // Json 형식으로 서버에서 가져온 서버의 파일 목록들
     // Start is called before the first frame update
     void Start()
     {
-
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            if (transform.GetChild(i).name == "TestLog") {
-                TestLog = transform.GetChild(i).GetComponent<TextMeshPro>();
-                break;
-            }
-        }
-
-
+        AddLog("Start");
+        imageViewer = imageViewerGameObject.GetComponent<ImageViewer>();
     }
     void OnEnable() {
-        StartCoroutine(Get("http://localhost:8080/obj/file_list.json", (request) =>
+        AddLog("OnEnable");
+        GetFileList();
+    }
+    private void SetImageFromFiles() {
+        AddLog("SetImageFromFiles");
+        if (fileList == null) {
+            AddLog("ERR! fileList is NULL SetImageFromFiles");
+            return;
+        }
+        string[] imgList = fileList.images;
+        for (int i=0;i< imgList.Length;i++) {
+            StartCoroutine(GetTexture(imgList[i], i+1)); // idx는 1부터 시작
+        }
+        imageViewerGameObject.SetActive(true);
+    }
+    private void GetFileList() {
+        AddLog("GetFileList");
+        StartCoroutine(Get("http://192.168.137.1:8080/obj/file_list.json", (request) =>
         {
             if (request.result == UnityWebRequest.Result.Success && request.responseCode == 200)
             {
-                Debug.Log(request.downloadHandler.text);
-                if (TestLog != null)
-                {
-                    TestLog.SetText(request.downloadHandler.text);
-                }
+                string r = request.downloadHandler.text;
+                Debug.Log(r);
+                fileList = JsonUtility.FromJson<ServerFileList>(r);
+                SetImageFromFiles();
             }
             else
             {
                 string err = "[Error]:" + request.responseCode + request.error;
                 Debug.Log(err);
-                if (TestLog != null)
-                {
-                    TestLog.SetText(err);
-                }
+                AddLog(err);
             }
         }));
     }
+    private void AddLog(string s) {
+        if (testLog != null)
+        {
+            testLog.AddLog("[OneLevelCanvus] : " + s);
+        }
+    }
+    // Get 통신하고 결과값 반환하기
     IEnumerator Get(string url, Action<UnityWebRequest> callback)
     {
         UnityWebRequest request = UnityWebRequest.Get(url);
         yield return request.SendWebRequest();
         callback(request);
     }
-    // Update is called once per frame
-    void Update()
+
+    IEnumerator GetTexture(string url,int idx)
     {
-        
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
+        yield return www.SendWebRequest();
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            if (imageViewer!=null) {
+                imageViewer.SetTextureImg(((DownloadHandlerTexture)www.downloadHandler).texture, idx);
+            }
+            //img.texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+        }
+    }
+
+
+    [Serializable]
+    public class ServerFileList {
+        public string[] images;
+        public string[] files;
     }
 }
