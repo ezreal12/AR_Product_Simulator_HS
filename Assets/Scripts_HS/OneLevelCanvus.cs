@@ -30,9 +30,11 @@ public class OneLevelCanvus : MonoBehaviour
             AddLog("ERR! fileList is NULL SetImageFromFiles");
             return;
         }
+
         string[] imgList = fileList.images;
+        string[] objList = fileList.files;
         for (int i=0;i< imgList.Length;i++) {
-            StartCoroutine(GetTexture(imgList[i], imgList.Length)); // idx는 1부터 시작
+            StartCoroutine(GetServerData(imgList[i], objList[i], imgList.Length)); // idx는 1부터 시작
         }
        
     }
@@ -69,9 +71,9 @@ public class OneLevelCanvus : MonoBehaviour
         callback(request);
     }
 
-    IEnumerator GetTexture(string url,int arrSize)
+    IEnumerator GetServerData(string imgUrl,string objUrl,int arrSize)
     {
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(imgUrl);
         yield return www.SendWebRequest();
         if (www.result != UnityWebRequest.Result.Success)
         {
@@ -80,7 +82,9 @@ public class OneLevelCanvus : MonoBehaviour
         else
         {
             if (imageViewer!=null) {
-                imageViewer.AddTexture(((DownloadHandlerTexture)www.downloadHandler).texture);
+                //imageViewer.AddTexture(((DownloadHandlerTexture)www.downloadHandler).texture);
+                ObjectItem item = new ObjectItem(((DownloadHandlerTexture)www.downloadHandler).texture, imgUrl, objUrl);
+                imageViewer.AddItem(item);
                 // 모든 이미지 로딩을 완료했을경우
                 if (arrSize == imageViewer.GetCount()) {
                     imageViewerGameObject.SetActive(true);

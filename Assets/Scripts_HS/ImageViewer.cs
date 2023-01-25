@@ -6,17 +6,19 @@ using UnityEngine.UI;
 public class ImageViewer : MonoBehaviour
 {
     public RawImage[] images;
-    private List<Texture> imgTextureList;
-    private int nowIndex = 0;
+    private List<ObjectItem> itemList;
+    private int nowIndex = 0; // nowIndex는 0부터 RawImageUI의 갯수 -1개까지 
+    public TestLogCompo testLog; // 테스트 로그용 컴포넌트
+
     public ImageViewer() {
-        imgTextureList = new List<Texture>();
+        itemList = new List<ObjectItem>();
     }
 
-    public void AddTexture(Texture t) {
-        imgTextureList.Add(t);
+    public void AddItem(ObjectItem o) {
+        itemList.Add(o);
     }
     public void ResetImgs() {
-        imgTextureList.Clear();
+        itemList.Clear();
     }
     public void Show()
     {
@@ -25,26 +27,27 @@ public class ImageViewer : MonoBehaviour
     }
 
     public int GetCount() {
-        return imgTextureList.Count;
+        return itemList.Count;
     }
 
     private void DrawImage() {
         /*
-           왼쪽부터 0 1 2 / 0 1 2 3 4 
+           왼쪽부터 0 1 2 
          */
         for (int i=0; i< images.Length; i++) {
             //  nowIndex + i;
             int ti = nowIndex + i;
-            if (ti >= imgTextureList.Count)
+            if (ti >= itemList.Count)
             {
                 ti = 0;
             }
-            images[i].texture = imgTextureList[ti];
+            //images[i].texture = imgTextureList[ti];
+            images[i].texture = itemList[ti].texture;
         }
     }
 
     public void Next() {
-        if (nowIndex+ images.Length >= imgTextureList.Count) {
+        if (nowIndex+ images.Length >= itemList.Count) {
             return;
         }
         nowIndex++;
@@ -58,6 +61,19 @@ public class ImageViewer : MonoBehaviour
         }
         nowIndex--;
         DrawImage();
+    }
+
+    // idx는 1부터 3까지 3개 
+    public void OnClickImg(int idx) {
+        string objUrl = "";
+        switch (idx) {
+            case 1: objUrl = itemList[nowIndex].ObjSrc; break;
+            case 2: objUrl = itemList[nowIndex + 1].ObjSrc; break;
+            case 3: objUrl = itemList[nowIndex + 2].ObjSrc; break;
+            default: break;
+        }
+        if (testLog != null)
+            testLog.AddLog("objUrl : " + objUrl);
     }
 
 }
