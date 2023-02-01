@@ -32,9 +32,14 @@ public class AnchorCreator : MonoBehaviour
     [SerializeField]
     GameObject m_OneUICanvus; // 1레벨 UI (테스트로그, 서버와 JSon 통신, 서버에서 이미지 가져와 보이기)
 
+
+
     public TestLogCompo testLog; // 테스트 로그용 컴포넌트
 
     public float diff;
+
+
+
     /*
     0레벨 : 프로그램 시작 ~ 앵커 놓고 확인버튼 누르기까지 (이전버튼 눌러서 돌아올수있음.)
     1레벨 : 0레벨에서 확인버튼 눌림 -> 0레벨 UI 숨김 , 1레벨 UI 보임/ 서버와 통신해서 JSon 파싱 시작
@@ -141,7 +146,7 @@ public class AnchorCreator : MonoBehaviour
             // ARPlane에 연결된 앵커는 ARPlane의 정확한 위치가 조정될 때 ARAnchorManager에 의해 자동으로 업데이트되기 때문에 앵커와 함께.
              */
 
-            var anchor = m_AnchorManager.AttachAnchor(hitPlane, hitPose);
+            ARAnchor anchor = m_AnchorManager.AttachAnchor(hitPlane, hitPose);
 
             if (anchor == null)
             {
@@ -166,6 +171,7 @@ public class AnchorCreator : MonoBehaviour
 
         }
     }
+    // 모든 캔버스 안보이게 초기화 -> 월드에 보여지던 오브젝트도 초기화
     private void DisabledAllCanvus() {
         if (m_MainUICanvus.activeSelf == true)
         {
@@ -174,6 +180,10 @@ public class AnchorCreator : MonoBehaviour
         if (m_OneUICanvus.activeSelf == true)
         {
             m_OneUICanvus.SetActive(false);
+        }
+        if (nowShowingObject != null) {
+            Destroy(nowShowingObject);
+            nowShowingObject = null;
         }
 
     }
@@ -196,6 +206,25 @@ public class AnchorCreator : MonoBehaviour
         }
     }
 
+    public void ShowObject(GameObject inst) {
+        if (anchorObejct == null) {
+            AddLog("ShowObject : anchor is NULL");
+            return;
+        }
+        if (nowShowingObject != null) {
+            Destroy(nowShowingObject);
+        }
+        // anchor의 위치(transform)에 프리팹 생성
+        //anchorObejct = Instantiate(m_AnchorPrefab, anchor.transform);
+        //anchorObejct.transform.position = anchor.transform.position;
+
+        AddLog("~!ShowObject!~");
+        //Instantiate(inst, anchor.transform);
+        //inst.transform.position = anchorObejct.transform.position;
+        nowShowingObject = inst;
+        nowShowingObject.transform.SetPositionAndRotation(anchorObejct.transform.position, anchorObejct.transform.rotation);
+    }
+
     private void AddLog(string log) {
         if (testLog != null) {
             testLog.AddLog(log);
@@ -205,6 +234,9 @@ public class AnchorCreator : MonoBehaviour
     static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();
 
     GameObject anchorObejct = null;
+
+
+    GameObject nowShowingObject = null;
 
     ARRaycastManager m_RaycastManager;
 

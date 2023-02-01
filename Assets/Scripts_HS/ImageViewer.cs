@@ -9,6 +9,7 @@ public class ImageViewer : MonoBehaviour
     private List<ObjectItem> itemList;
     private int nowIndex = 0; // nowIndex는 0부터 RawImageUI의 갯수 -1개까지 
     public TestLogCompo testLog; // 테스트 로그용 컴포넌트
+    public OneLevelCanvus parentMenu;
 
     public ImageViewer() {
         itemList = new List<ObjectItem>();
@@ -72,8 +73,9 @@ public class ImageViewer : MonoBehaviour
             case 3: objUrl = itemList[nowIndex + 2].ObjSrc; break;
             default: break;
         }
-        if (testLog != null)
-            testLog.AddLog("objUrl : " + objUrl);
+        if (parentMenu != null)
+            parentMenu.LoadModelFromWeb(objUrl);
+
     }
 
 }

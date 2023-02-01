@@ -12,6 +12,7 @@ public class OneLevelCanvus : MonoBehaviour
     public GameObject imageViewerGameObject;
     private ImageViewer imageViewer; // 서버에서 가져온 이미지 출력용 그거
     private ServerFileList fileList; // Json 형식으로 서버에서 가져온 서버의 파일 목록들
+    public ObjectSpawnManager spawnManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -93,6 +94,14 @@ public class OneLevelCanvus : MonoBehaviour
             }
             //img.texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
         }
+    }
+
+    public void LoadModelFromWeb(string url) {
+        if (spawnManager == null)
+            return;
+
+        spawnManager.GetObejctFromWeb(url);
+
     }
 
 

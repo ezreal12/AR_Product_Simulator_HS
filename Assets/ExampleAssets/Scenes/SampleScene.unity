@@ -863,6 +863,65 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &524194846
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 524194848}
+  - component: {fileID: 524194847}
+  - component: {fileID: 524194849}
+  m_Layer: 0
+  m_Name: ObjectSpawnManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &524194847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524194846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 147906bc1f1f2e445b780c50f0809c5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &524194848
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524194846}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.9761419, y: 0.413, z: 2.225}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &524194849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524194846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30ac4726cd3f1cb4597be3954695d2de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zeroLevelMenu: {fileID: 388525035}
+  testLog: {fileID: 524687222}
 --- !u!1 &524687218
 GameObject:
   m_ObjectHideFlags: 0
@@ -2410,6 +2469,7 @@ MonoBehaviour:
   - {fileID: 486966486}
   - {fileID: 1610505131}
   testLog: {fileID: 524687222}
+  parentMenu: {fileID: 1843399818}
 --- !u!1 &1843399813
 GameObject:
   m_ObjectHideFlags: 0
@@ -2528,6 +2588,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   testLog: {fileID: 524687222}
   imageViewerGameObject: {fileID: 1739657986}
+  spawnManager: {fileID: 524194849}
 --- !u!1 &2108845938
 GameObject:
   m_ObjectHideFlags: 0
